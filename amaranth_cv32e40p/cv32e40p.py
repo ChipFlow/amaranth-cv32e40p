@@ -196,9 +196,10 @@ class CV32E40P(wiring.Component):
         connect(m, ibus_adapt.wb, flipped(self.ibus))
         connect(m, dbus_adapt.wb, flipped(self.dbus))
 
-        path = Path(__file__).parent / f"verilog/cv32e40p_conv_sv2v.v"
-        with open(path, 'r') as f:
-            platform.add_file(path.name, f)
+        if platform is not None:
+            path = Path(__file__).parent / f"verilog/cv32e40p_conv_sv2v.v"
+            with open(path, 'r') as f:
+                platform.add_file(path.name, f)
         return m
 
 class DebugModule(wiring.Component):
@@ -260,9 +261,9 @@ class DebugModule(wiring.Component):
         connect(m, init_adapt.wb, flipped(self.initiator))
         connect(m, tgt_adapt.wb, flipped(self.target))
 
-
-        path = Path(__file__).parent / f"verilog/dm_wrap_conv_sv2v.v"
-        with open(path, 'r') as f:
-            platform.add_file(path.name, f)
+        if platform is not None:
+            path = Path(__file__).parent / f"verilog/dm_wrap_conv_sv2v.v"
+            with open(path, 'r') as f:
+                platform.add_file(path.name, f)
 
         return m

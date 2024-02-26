@@ -18,7 +18,7 @@ module dm_wrap (
     input  logic [3:0] dm_be_i,
     input  logic [31:0] dm_wdata_i,
     output logic [31:0] dm_rdata_o,
-    output logic [31:0] dm_rvalid_o,
+    output logic dm_rvalid_o,
 
     // DM -> system bus
     output logic sb_req_o,
@@ -53,10 +53,10 @@ module dm_wrap (
     ) dm_top_i (
         .clk_i(clk_i),
         .rst_ni(rst_ni),
-        .testmode_i(0),
+        .testmode_i(1'b0),
         .ndmreset_o(ndmreset_o),
         .debug_req_o(debug_req_o),
-        .unavailable_i(0),
+        .unavailable_i(1'b0),
         .hartinfo_i('0),
         .slave_req_i(dm_req_i),
         .slave_gnt_o(dm_gnt_o),
@@ -75,6 +75,8 @@ module dm_wrap (
         .master_gnt_i(sb_gnt_i),
         .master_rvalid_i(sb_rvalid_i),
         .master_rdata_i(sb_rdata_i),
+        .master_err_i(1'b0),
+        .master_other_err_i(1'b0),
 
         .dmi_rst_ni(rst_ni),
         .dmi_req_valid_i(jtag_req_valid),
