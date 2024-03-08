@@ -20,6 +20,7 @@ sv2v -D SYNTHESIS -D PULP_FPGA_EMUL \
 	${DEBUG_RTL_DIR}/dm_sba.sv \
 	${DEBUG_RTL_DIR}/dm_top.sv \
 	${DEBUG_RTL_DIR}/../debug_rom/debug_rom.sv \
+	${DEBUG_RTL_DIR}/../debug_rom/debug_rom_one_scratch.sv \
 	${COMMON_CELLS}/src/deprecated/fifo_v2.sv \
 	${COMMON_CELLS}/src/fifo_v3.sv \
 	harness/dm_wrap.sv
