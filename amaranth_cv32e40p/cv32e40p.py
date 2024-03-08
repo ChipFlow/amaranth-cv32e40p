@@ -213,6 +213,7 @@ class DebugModule(wiring.Component):
             "jtag_tdi":    In(1),
             "jtag_tdo":    Out(1),
             "jtag_tck":    In(1),
+            "jtag_trst":   In(1),
             "debug_req":   Out(1),
             "ndmreset":    Out(1),
         })
@@ -253,7 +254,7 @@ class DebugModule(wiring.Component):
 
             i_tck_i=self.jtag_tck,
             i_tms_i=self.jtag_tms,
-            i_trst_ni=1, # TODO
+            i_trst_ni=self.jtag_trst,
             i_tdi_i=self.jtag_tdi,
             o_tdo_o=self.jtag_tdo
         )
