@@ -10,7 +10,7 @@ include = ["*.v", "*.yaml"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-amaranth = ">=0.5,<0.6"
+amaranth = ">=0.5"
 
 [tool.poetry-dynamic-versioning]
 enable = true
