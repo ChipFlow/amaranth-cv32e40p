@@ -1,0 +1,86 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+name: CI
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Set up PDM
+        uses: pdm-project/setup-pdm@v4
+
+      - name: Install dependencies with multirepo
+        uses: chipflow/pdm-multirepo@v1
+
+      - name: Run tests
+        run: |
+          pdm run test
+      - name: Run lints
+        run: |
+          pdm run lint
+      - name: Run doc tests
+        run: pdm run test-docs
+
+  license:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check source code licenses
+        run: ./tools/license_check.sh
+
+  test-submit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dry: [true, false]
+    env:
+      DRY: ${{ matrix.dry && '--dry-run' || '' }}
+      IS_DRY: ${{ matrix.dry && '(dry run)' || '' }}
+    name:  ${{ matrix.dry && 'Test Submit - Dry run' || 'Test submit' }}
+
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Check out chipflow-examples
+        uses: actions/checkout@v4
+        with:
+          repository: ChipFlow/chipflow-examples
+          path: chipflow-examples
+          ref: ${{ github.head_ref || 'refs/heads/main' }}
+
+      - name: Set up PDM
+        uses: pdm-project/setup-pdm@v4
+        with:
+          python-version: '3.10'
+          cache: true
+          cache-dependency-path: './**/pyproject.toml'
+
+
+      - name: Install dependencies with multirepo
+        uses: chipflow/pdm-multirepo@v1
+        with:
+          working-directory: './chipflow-examples'
+
+      - name: Run tests
+        working-directory: ./chipflow-examples
+        run: |
+          pdm test
+
+      - name: Submit build ${{ env.is_dry }}
+        working-directory: ./chipflow-examples/minimal
+        run: |
+          pdm run chipflow pin lock
+          pdm run chipflow silicon submit --wait $DRY
+        env:
+          CHIPFLOW_API_KEY: ${{ secrets.CHIPFLOW_API_KEY}}
